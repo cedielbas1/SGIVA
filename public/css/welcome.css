@@ -1,0 +1,260 @@
+/* SGIVA - Sistema de Gestión Integral para Vivero Agrícola */
+/* Estilos personalizados para la portada */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    color: #1b1b18;
+}
+
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #2d5a27 !important;
+    font-size: 1.5rem;
+}
+
+.navbar-brand i {
+    font-size: 1.75rem;
+}
+
+.nav-link {
+    color: #1b1b18 !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #2d5a27 !important;
+}
+
+.nav-link.active {
+    color: #2d5a27 !important;
+}
+
+.btn-primary {
+    background-color: #2d5a27;
+    border-color: #2d5a27;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1e3d1a;
+    border-color: #1e3d1a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(45, 90, 39, 0.3);
+}
+
+.btn-outline-success {
+    color: #2d5a27;
+    border-color: #2d5a27;
+    font-weight: 600;
+}
+
+.btn-outline-success:hover {
+    background-color: #2d5a27;
+    border-color: #2d5a27;
+}
+
+.btn-light {
+    background-color: white;
+    border-color: white;
+    color: #2d5a27;
+    font-weight: 600;
+}
+
+.btn-light:hover {
+    background-color: #f8f9fa;
+    border-color: white;
+    color: #1e3d1a;
+}
+
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    animation: fadeInDown 0.8s ease;
+}
+
+.hero-section .lead {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.hero-buttons {
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #2d5a27;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.card {
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-radius: 0.75rem;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.card h3 {
+    font-weight: 700;
+    color: #1b1b18;
+    margin-bottom: 1rem;
+}
+
+.card p {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.section-title {
+    font-weight: 700;
+    color: #1b1b18;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.section-subtitle {
+    color: #999;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+}
+
+.info-section {
+    background-color: white;
+    padding: 4rem 0;
+}
+
+.info-section h2 {
+    font-weight: 700;
+    color: #1b1b18;
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+}
+
+.info-section ul {
+    list-style: none;
+}
+
+.info-section li {
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+    color: #1b1b18;
+    display: flex;
+    align-items: center;
+}
+
+.info-section .bi {
+    color: #2d5a27;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.info-section img {
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+footer {
+    background-color: #212529;
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+footer .small {
+    color: #aaa;
+}
+
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .info-section h2 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
