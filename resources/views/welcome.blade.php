@@ -6,8 +6,6 @@
 
         <title>SGIVA - {{ config('app.name', 'Laravel') }}</title>
 
-        @fonts
-
         <!-- Bootstrap 5 CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Google Fonts -->
@@ -43,11 +41,11 @@
                         </li>
                         @if (Route::has('login'))
                             <li class="nav-item ms-lg-3">
-                                <a href="{{ route('login') }}" class="btn btn-outline-success px-4 rounded-pill">Ingresar</a>
+                                <a href="{{ route('login') }}" class="btn btn-outline-success px-4 rounded-pill">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item ms-2">
-                                    <a href="{{ route('register') }}" class="btn btn-primary px-4 rounded-pill">Registrarse</a>
+                                    <a href="{{ route('register') }}" class="btn btn-primary px-4 rounded-pill">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @endif
@@ -62,12 +60,22 @@
                 <h1 class="display-3 fw-bold mb-4">Gestión Integral para Vivero Agrícola</h1>
                 <p class="lead mb-5">Optimiza la producción de café, aguacate y cacao con trazabilidad total y control financiero.</p>
                 <div class="hero-buttons d-grid gap-3 d-sm-flex justify-content-sm-center">
-                    @if (Route::has('login'))
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">Comenzar Ahora</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 py-3 rounded-pill">Registrarse</a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
+                            <i class="bi bi-speedometer2 me-2"></i>Ir al Dashboard
+                        </a>
+                    @else
+                        @if (Route::has('login'))
+                            <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                            </a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 py-3 rounded-pill">
+                                    <i class="bi bi-person-plus me-2"></i>Registrarse
+                                </a>
+                            @endif
                         @endif
-                    @endif
+                    @endauth
                 </div>
             </div>
         </header>
