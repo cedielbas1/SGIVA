@@ -15,18 +15,19 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles): mixed
     {
         if (!$request->user()) {
-            return redirect('login');
+            return redirect()->route('login');
         }
 
-        foreach ($roles as $role) {
-            if ($request->user()->role === $role) {
-                return $next($request);
-            }
-            
-            // Permitir super_admin en todas las rutas de admin
-            if ($request->user()->role === 'super_admin' && $role === 'admin') {
-                return $next($request);
-            }
+        $userRole = $request->user()->role;
+
+        // Permitir super_admin en todas las rutas protegidas por role
+        if ($userRole === 'super_admin') {
+            return $next($request);
+        }
+
+        // Comprobar si el rol del usuario está en la lista de roles permitidos
+        if (!empty($roles) && in_array($userRole, $roles, true)) {
+            return $next($request);
         }
 
         abort(403, 'No tienes permiso para acceder a este recurso.');

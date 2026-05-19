@@ -148,23 +148,17 @@ El archivo `routes/web.php` **NO incluye** `Auth::routes()` que habilita registr
 
 ## 📦 Usuarios de Prueba
 
-Al ejecutar `php artisan migrate:fresh --seed`:
+Al ejecutar `php artisan migrate:fresh --seed`, el seeder genera cuentas de desarrollo.
+Las contraseñas indicadas en este documento son exclusivamente ejemplos de desarrollo
+y NO deben usarse en entornos de producción. Asegúrate de cambiar las contraseñas
+por valores únicos y fuertes antes de exponer la aplicación.
 
-```bash
-# Super Admin
-Email: superadmin@sgiva.local
-Password: password
-Role: super_admin
+Ejemplo (dev):
 
-# Admin
-Email: admin@sgiva.local
-Password: password
-Role: admin
-
-# Usuario General
-Email: usuario@sgiva.local
-Password: password
-Role: user
+```text
+Super Admin: superadmin@sgiva.local — password: (dev placeholder)
+Admin: admin@sgiva.local — password: (dev placeholder)
+Usuario general: usuario@sgiva.local — password: (dev placeholder)
 ```
 
 ---
@@ -296,7 +290,9 @@ php artisan route:list
 2. **Default deny**: Las políticas por defecto deben negar, no permitir
 3. **Middleware orden**: `auth` antes que `check_role`
 4. **Logs**: Revisar `storage/logs/laravel.log` para errores
-5. **Contraseñas**: Las de prueba (`password`) solo para desarrollo
+5. **Contraseñas**: Las contraseñas mostradas en la documentación son únicamente
+    placeholders para desarrollo. Nunca incluir contraseñas reales en el repositorio
+    ni en documentación pública.
 6. **Variables de entorno**: Cambiar `APP_DEBUG=false` en producción
 
 ---

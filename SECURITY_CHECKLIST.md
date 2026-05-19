@@ -122,8 +122,10 @@ PASS  tests/Feature/AuthorizationTest.php (8 tests)
 ```bash
 php artisan tinker
 # En la consola:
-User::create(['name' => 'Test', 'email' => 'test@test.local', 'password' => bcrypt('test')])
-# Debe mostrar: 'role' => 'user'
+// Evitar insertar contraseñas literales en ejemplos públicos.
+// Usa un password seguro o un placeholder cuando trabajes en desarrollo.
+User::create(['name' => 'Test', 'email' => 'test@test.local', 'password' => bcrypt('your_dev_password')])
+// Debe mostrar: 'role' => 'user'
 ```
 
 ### 2. Probar rutas sin autenticar
@@ -148,7 +150,9 @@ curl http://localhost:8000/cultivos
 
 ### 5. Crear usuario con comando
 ```bash
-php artisan user:create --name="Juan" --email="juan@sgiva.local" --password="secure123" --role=admin
+php artisan user:create --name="Juan" --email="juan@sgiva.local" --role=admin
+// Se recomienda no pasar la contraseña en la línea de comandos. Omite
+// `--password` para introducirla de forma segura cuando se te solicite.
 # Debe crear el usuario exitosamente
 ```
 
