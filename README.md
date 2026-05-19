@@ -1,53 +1,295 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SGIVA - Sistema de Gestión Integral de Ventas Agrícolas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de gestión agrícola desarrollado con Laravel 13.7 para administrar cultivos, lotes, inventarios, actividades, insumos y ventas.
 
-## About Laravel
+## 🚀 Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ **Gestión de Cultivos**: Crear, editar y eliminar tipos de cultivos (Café, Aguacate, Cacao, etc.)
+- ✅ **Gestión de Lotes**: Administrar parcelas de terreno con códigos únicos
+- ✅ **Control de Inventario**: Registrar y rastrear cantidad de plantas por lote y fila
+- ✅ **Actividades Agrícolas**: Registrar operaciones (riego, fumigación, siembra, cosecha, etc.)
+- ✅ **Gestión de Insumos**: Control de semillas, fertilizantes, pesticidas y otros materiales
+- ✅ **Registro de Ventas**: Registrar ventas con cálculo automático de totales
+- ✅ **Sistema de Roles**: Super Admin, Admin y Usuario con permisos específicos
+- ✅ **Autorización basada en Políticas**: Políticas Laravel para control granular de acceso
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Stack Tecnológico
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 13.7
+- **PHP**: 8.3+
+- **Base de Datos**: SQLite (por defecto) o MySQL/PostgreSQL
+- **Frontend**: Blade Templates con Bootstrap 5.3 + Tailwind CSS 4.0
+- **Bundler**: Vite 8.0.0
+- **Testing**: PHPUnit 12.5.12
+- **Code Standards**: Laravel Pint 1.27
 
-## Learning Laravel
+## 📦 Requisitos Previos
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.3 o superior
+- Composer
+- Node.js 18+ (para Vite)
+- SQLite o MySQL
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🔧 Instalación
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Clonar o descargar el proyecto
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+cd c:\laragon\www\SGIVA
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Instalar dependencias PHP
+```bash
+composer install
+```
 
-## Contributing
+### 3. Instalar dependencias Node
+```bash
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Configurar variables de entorno
+```bash
+# Copiar archivo de ejemplo
+cp .env.example .env
 
-## Code of Conduct
+# Generar APP_KEY
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 5. Crear base de datos SQLite (si no existe)
+```bash
+# La base de datos se crea automáticamente en database/database.sqlite
+# O ejecutar migraciones (ver paso 6)
+```
+
+### 6. Ejecutar migraciones
+```bash
+php artisan migrate
+```
+
+### 7. (Opcional) Ejecutar seeders para datos de prueba
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 8. Compilar assets
+```bash
+npm run dev
+# O para producción:
+npm run build
+```
+
+### 9. Iniciar servidor de desarrollo
+```bash
+php artisan serve
+```
+
+Acceder a: http://localhost:8000
+
+## 🔐 Autenticación y Roles
+
+### Sistema de Roles Implementado
+
+**Super Admin**
+- Acceso completo a todas las funciones
+- Gestión de usuarios y asignación de roles
+- Visualización de reportes completos
+
+**Admin**
+- Gestión de cultivos, lotes, inventarios
+- Creación de actividades e insumos
+- Procesamiento de ventas
+- Sin acceso a administración de usuarios
+
+**Usuario**
+- Visualización de cultivos y lotes
+- Registro de actividades propias
+- Visualización de reportes
+- Acceso limitado a edición
+
+### Crear Usuario de Prueba
+
+```bash
+php artisan tinker
+```
+
+```php
+// Crear Super Admin
+User::create([
+    'name' => 'Super Admin',
+    'email' => 'admin@sgiva.local',
+    'password' => bcrypt('password'),
+    'role' => 'super_admin'
+]);
+
+// Crear Admin
+User::create([
+    'name' => 'Administrador',
+    'email' => 'gerente@sgiva.local',
+    'password' => bcrypt('password'),
+    'role' => 'admin'
+]);
+
+// Crear Usuario Normal
+User::create([
+    'name' => 'Usuario',
+    'email' => 'usuario@sgiva.local',
+    'password' => bcrypt('password'),
+    'role' => 'usuario'
+]);
+```
+
+## 📋 Estructura de Rutas
+
+### Públicas
+- `GET /` - Página de bienvenida
+- `POST /register` - Registro de nuevos usuarios
+- `POST /login` - Inicio de sesión
+
+### Autenticadas (requieren login)
+- `GET /dashboard` - Panel principal
+- `GET /cultivos` - Listado de cultivos
+- `POST /cultivos` - Crear cultivo
+- `GET /cultivos/{id}` - Ver cultivo
+- `PUT /cultivos/{id}` - Editar cultivo
+- `DELETE /cultivos/{id}` - Eliminar cultivo
+
+- `GET /lotes` - Listado de lotes
+- `POST /lotes` - Crear lote
+- `GET /lotes/{id}` - Ver lote
+- `PUT /lotes/{id}` - Editar lote
+- `DELETE /lotes/{id}` - Eliminar lote
+
+- `GET /inventarios` - Listado de inventarios
+- `GET /actividades` - Listado de actividades
+- `GET /insumos` - Listado de insumos
+- `GET /ventas` - Listado de ventas
+
+## 📊 Modelos y Relaciones
+
+```
+User
+├─ hasMany(Actividad)
+└─ timestamps
+
+Cultivo
+├─ hasMany(Lote)
+├─ hasMany(Inventario)
+├─ hasMany(Insumo)
+├─ hasMany(Venta)
+└─ timestamps
+
+Lote
+├─ belongsTo(Cultivo)
+├─ hasMany(Inventario)
+├─ hasMany(Actividad)
+├─ hasMany(Venta)
+└─ timestamps
+
+Inventario
+├─ belongsTo(Lote)
+└─ timestamps
+
+Actividad
+├─ belongsTo(User)
+├─ belongsTo(Lote)
+└─ timestamps
+
+Insumo
+├─ belongsTo(Cultivo, nullable)
+└─ timestamps
+
+Venta
+├─ belongsTo(Cultivo)
+├─ belongsTo(Lote)
+└─ timestamps
+```
+
+## 🚀 Primeros Pasos
+
+1. **Crear Cultivo**: Navega a Cultivos → Nueva Cultivo
+2. **Crear Lote**: Navega a Lotes → Nuevo Lote (asociar a cultivo)
+3. **Agregar Inventario**: Navega a Inventarios → Nuevo Inventario
+4. **Registrar Actividad**: Navega a Actividades → Nueva Actividad
+5. **Ingresar Insumos**: Navega a Insumos → Nuevo Insumo
+6. **Registrar Venta**: Navega a Ventas → Nueva Venta
+
+## 🧪 Testing
+
+Ejecutar tests unitarios:
+```bash
+php artisan test
+```
+
+Ejecutar con cobertura:
+```bash
+php artisan test --coverage
+```
+
+## 📝 Comandos Útiles
+
+```bash
+# Limpiar cache
+php artisan cache:clear
+
+# Limpiar config
+php artisan config:clear
+
+# Regenerar claves de autoload
+composer dump-autoload
+
+# Revisar código (Laravel Pint)
+./vendor/bin/pint
+
+# Resetear base de datos
+php artisan migrate:fresh
+
+# Ver rutas registradas
+php artisan route:list
+
+# Crear modelo con migración y controlador
+php artisan make:model NombreModelo -mcr
+```
+
+## 🔄 Configuración de Base de Datos
+
+### SQLite (Por defecto)
+La base de datos se almacena en `database/database.sqlite`
+
+### MySQL
+1. Editar `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sgiva
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+2. Crear base de datos:
+```bash
+mysql -u root -e "CREATE DATABASE sgiva;"
+```
+
+3. Ejecutar migraciones:
+```bash
+php artisan migrate
+```
+
+## 📧 Contacto y Soporte
+
+Para reportar bugs o sugerencias, contactar al equipo de desarrollo.
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT.
+
+---
+
+**Última actualización**: 2026-01-09
+**Versión**: 1.0.0
+
 
 ## Security Vulnerabilities
 

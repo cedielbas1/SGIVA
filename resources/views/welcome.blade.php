@@ -61,10 +61,6 @@
                 <p class="lead mb-5">Optimiza la producción de café, aguacate y cacao con trazabilidad total y control financiero.</p>
                 <div class="hero-buttons d-grid gap-3 d-sm-flex justify-content-sm-center">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
-                            <i class="bi bi-speedometer2 me-2"></i>Ir al Dashboard
-                        </a>
-                    @else
                         @if (Route::has('login'))
                             <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión

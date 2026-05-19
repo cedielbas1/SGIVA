@@ -1,246 +1,253 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-        <title>Dashboard - SGIVA</title>
+@section('title', 'Dashboard - SGIVA')
 
-        <!-- Bootstrap 5 CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-        <!-- Bootstrap Icons -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard_sgiva.css') }}">
+@endpush
 
-        <!-- Dashboard CSS -->
-        <link rel="stylesheet" href="{{ asset('css/dashboard_sgiva.css') }}">
+@section('content')
+    <!-- Sidebar Navigation -->
+    <aside id="dashboardSidebar" class="sidebar" aria-label="Panel de navegación principal">
+        <div class="sidebar-brand">
+            <h3>
+                <i class="bi bi-tree-fill"></i>
+                <span>SGIVA</span>
+            </h3>
+        </div>
 
-        <!-- Vite (Opcional) -->
-        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-            @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-        @endif
-    </head>
-    <body>
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h3>
-                    <i class="bi bi-tree-fill"></i>
-                    <span>SGIVA</span>
-                </h3>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="{{ route('cultivos.index') }}" class="nav-link {{ request()->routeIs('cultivos.*') ? 'active' : '' }}">
+                    <i class="bi bi-sprout"></i>
+                    <span>Cultivos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('lotes.index') }}" class="nav-link {{ request()->routeIs('lotes.*') ? 'active' : '' }}">
+                    <i class="bi bi-grid-3x3"></i>
+                    <span>Lotes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('inventarios.index') }}" class="nav-link {{ request()->routeIs('inventarios.*') ? 'active' : '' }}">
+                    <i class="bi bi-boxes"></i>
+                    <span>Inventarios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('actividades.index') }}" class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}">
+                    <i class="bi bi-lightning-fill"></i>
+                    <span>Actividades</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('insumos.index') }}" class="nav-link {{ request()->routeIs('insumos.*') ? 'active' : '' }}">
+                    <i class="bi bi-bag-fill"></i>
+                    <span>Insumos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('ventas.index') }}" class="nav-link {{ request()->routeIs('ventas.*') ? 'active' : '' }}">
+                    <i class="bi bi-cash-coin"></i>
+                    <span>Ventas</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="topbar-title">
+                <h1>Dashboard General</h1>
+            </div>
+            <div class="dashboard-control">
+                <button id="sidebarToggle" class="btn btn-outline-primary btn-sm sidebar-toggle" aria-controls="dashboardSidebar" aria-expanded="true">
+                    <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    <span class="sidebar-toggle-text">Ocultar panel</span>
+                </button>
+            </div>
+            <div class="topbar-right">
+                <div class="user-profile">
+                    <div class="user-avatar">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</div>
+                    <div class="user-info">
+                        <p class="user-name">{{ auth()->user()->name }}</p>
+                        <p class="user-role">{{ ucfirst(auth()->user()->role) }}</p>
+                    </div>
+                </div>
+
+                <!-- Botón de Salir Corregido para Laravel -->
+                <a href="{{ route('logout') }}" class="btn btn-outline-danger btn-sm"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right"></i> Salir
+                </a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon success">
+                    <i class="bi bi-sprout"></i>
+                </div>
+                <div class="stat-card-value">{{ $cultivosCount }}</div>
+                <div class="stat-card-label">Cultivos registrados</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Datos actualizados en tiempo real
+                </div>
             </div>
 
-            <ul class="nav-menu">
-                
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-sprout"></i>
-                        <span>Cultivos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-grid-3x3"></i>
-                        <span>Lotes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-box-seam"></i>
-                        <span>Inventario</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-bag"></i>
-                        <span>Insumos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-clipboard-check"></i>
-                        <span>Actividades</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-graph-up-arrow"></i>
-                        <span>Ventas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-file-earmark-pdf"></i>
-                        <span>Reportes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="bi bi-people"></i>
-                        <span>Usuarios</span>
-                    </a>
-                </li>
-            </ul>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Bar -->
-            <div class="topbar">
-                <div class="topbar-title">
-                    <h1>Dashboard General</h1>
+            <div class="stat-card warning">
+                <div class="stat-card-icon warning">
+                    <i class="bi bi-grid-3x3"></i>
                 </div>
-                <div class="topbar-right">
-                    <div class="user-profile">
-                        <div class="user-avatar">JD</div>
-                        <div class="user-info">
-                            <p class="user-name">Juan Díaz</p>
-                            <p class="user-role">Administrador</p>
+                <div class="stat-card-value">{{ $lotesCount }}</div>
+                <div class="stat-card-label">Lotes activos</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Nuevos lotes disponibles
+                </div>
+            </div>
+
+            <div class="stat-card info">
+                <div class="stat-card-icon info">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div class="stat-card-value">{{ $inventariosCount }}</div>
+                <div class="stat-card-label">Elementos de inventario</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Control de stock
+                </div>
+            </div>
+
+            <div class="stat-card info">
+                <div class="stat-card-icon info">
+                    <i class="bi bi-lightning-fill"></i>
+                </div>
+                <div class="stat-card-value">{{ $actividadesCount }}</div>
+                <div class="stat-card-label">Actividades registradas</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Operaciones recientes
+                </div>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-card-icon warning">
+                    <i class="bi bi-bag-fill"></i>
+                </div>
+                <div class="stat-card-value">{{ $insumosCount }}</div>
+                <div class="stat-card-label">Insumos registrados</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Inventario de insumos
+                </div>
+            </div>
+
+            <div class="stat-card danger">
+                <div class="stat-card-icon danger">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div class="stat-card-value">${{ number_format($ventasTotal, 2) }}</div>
+                <div class="stat-card-label">Ventas totales</div>
+                <div class="stat-card-change positive">
+                    <i class="bi bi-arrow-up"></i> Desde el inicio
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3>Distribución de lotes por cultivo</h3>
+                <div class="chart-summary-list">
+                    @forelse($cultivosPorLote as $cultivo)
+                        <div class="summary-item">
+                            <span>{{ $cultivo->nombre }}</span>
+                            <strong>{{ $cultivo->lotes_count }} lote{{ $cultivo->lotes_count === 1 ? '' : 's' }}</strong>
                         </div>
-                    </div>
-                    <a href="#" class="btn btn-outline-danger btn-sm">
-                        <i class="bi bi-box-arrow-right"></i> Salir
-                    </a>
+                    @empty
+                        <p class="text-muted">No hay cultivos registrados todavía.</p>
+                    @endforelse
                 </div>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="dashboard-grid">
-                <!-- Total Plántulas -->
-                <div class="stat-card">
-                    <div class="stat-card-icon success">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-card-value">12,450</div>
-                    <div class="stat-card-label">Plántulas en Inventario</div>
-                    <div class="stat-card-change positive">
-                        <i class="bi bi-arrow-up"></i> +5.2% este mes
-                    </div>
-                </div>
-
-                <!-- Ventas del Mes -->
-                <div class="stat-card warning">
-                    <div class="stat-card-icon warning">
-                        <i class="bi bi-graph-up-arrow"></i>
-                    </div>
-                    <div class="stat-card-value">$45,230</div>
-                    <div class="stat-card-label">Ventas del Mes</div>
-                    <div class="stat-card-change positive">
-                        <i class="bi bi-arrow-up"></i> +12.8% vs mes anterior
-                    </div>
-                </div>
-
-                <!-- Actividades Pendientes -->
-                <div class="stat-card info">
-                    <div class="stat-card-icon info">
-                        <i class="bi bi-clipboard-check"></i>
-                    </div>
-                    <div class="stat-card-value">8</div>
-                    <div class="stat-card-label">Actividades Pendientes</div>
-                    <div class="stat-card-change negative">
-                        <i class="bi bi-arrow-down"></i> -2 completadas hoy
-                    </div>
-                </div>
-
-                <!-- Valoración Inventario -->
-                <div class="stat-card danger">
-                    <div class="stat-card-icon danger">
-                        <i class="bi bi-cash-coin"></i>
-                    </div>
-                    <div class="stat-card-value">$98,500</div>
-                    <div class="stat-card-label">Valoración del Inventario</div>
-                    <div class="stat-card-change positive">
-                        <i class="bi bi-arrow-up"></i> +8.3% vs mes anterior
-                    </div>
+            <div class="chart-card">
+                <h3>Ventas últimos 7 días</h3>
+                <div class="chart-summary-list">
+                    @forelse($ventasUltimos7Dias as $ventaDia)
+                        <div class="summary-item">
+                            <span>{{ \Illuminate\Support\Carbon::parse($ventaDia->fecha)->format('d/m/Y') }}</span>
+                            <strong>${{ number_format($ventaDia->total, 2) }}</strong>
+                        </div>
+                    @empty
+                        <p class="text-muted">No se han registrado ventas recientemente.</p>
+                    @endforelse
                 </div>
             </div>
+        </div>
 
-            <!-- Charts Section -->
-            <div class="charts-section">
-                <!-- Distribución de Cultivos -->
-                <div class="chart-card">
-                    <h3>Distribución de Cultivos</h3>
-                    <div class="chart-placeholder">
-                        <span>Gráfico de Pastel - Café, Aguacate, Cacao</span>
-                    </div>
-                </div>
+        <div class="activity-section">
+            <h3>Actividad reciente</h3>
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Usuario</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($recentActivities as $actividad)
+                        <tr>
+                            <td>{{ $actividad->fecha->format('d/m/Y') }}</td>
+                            <td><span class="activity-badge activity">{{ $actividad->tipo_actividad }}</span></td>
+                            <td>{{ $actividad->lote?->codigo ?? 'Lote no asignado' }} - {{ $actividad->observaciones ?? 'Sin descripción' }}</td>
+                            <td>{{ $actividad->usuario?->name ?? 'Usuario desconocido' }}</td>
+                            <td>
+                                <span class="badge {{ $actividad->fecha->isFuture() ? 'bg-warning' : 'bg-success' }}">
+                                    {{ $actividad->fecha->isFuture() ? 'Programada' : 'Realizada' }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No hay actividades recientes para mostrar.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-                <!-- Tendencia de Ventas -->
-                <div class="chart-card">
-                    <h3>Tendencia de Ventas (Últimos 30 días)</h3>
-                    <div class="chart-placeholder">
-                        <span>Gráfico de Líneas - Ventas Diarias</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Activity Table -->
-            <div class="activity-section">
-                <h3>Actividad Reciente</h3>
-                <table class="activity-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Tipo</th>
-                            <th>Descripción</th>
-                            <th>Usuario</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>15/05/2026 - 14:30</td>
-                            <td><span class="activity-badge sales">Venta</span></td>
-                            <td>Venta de 500 plántulas de Café - Lote A1</td>
-                            <td>María García</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>15/05/2026 - 10:15</td>
-                            <td><span class="activity-badge inventory">Inventario</span></td>
-                            <td>Ingreso de 1000 bolsas para Aguacate</td>
-                            <td>Carlos López</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>14/05/2026 - 16:45</td>
-                            <td><span class="activity-badge activity">Actividad</span></td>
-                            <td>Riego y mantenimiento - Lote B2 (Cacao)</td>
-                            <td>Pedro Martínez</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>14/05/2026 - 09:20</td>
-                            <td><span class="activity-badge sales">Venta</span></td>
-                            <td>Venta de 300 plántulas de Aguacate - Lote C3</td>
-                            <td>Ana Rodríguez</td>
-                            <td><span class="badge bg-success">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>13/05/2026 - 15:00</td>
-                            <td><span class="activity-badge inventory">Inventario</span></td>
-                            <td>Ajuste de stock - Café (Pérdida por enfermedad)</td>
-                            <td>Juan Díaz</td>
-                            <td><span class="badge bg-warning">Pendiente Revisión</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div id="sidebarStatus" class="visually-hidden" aria-live="polite">Panel de navegación visible</div>
         </main>
 
-        <!-- Bootstrap 5 JS Bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    @push('scripts')
         <script>
-            // Activar enlace activo en el menú
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
+            document.addEventListener('DOMContentLoaded', function () {
+                const sidebar = document.getElementById('dashboardSidebar');
+                const toggleButton = document.getElementById('sidebarToggle');
+                const sidebarStatus = document.getElementById('sidebarStatus');
+                const mainContent = document.querySelector('.main-content');
+
+                if (!sidebar || !toggleButton || !mainContent || !sidebarStatus) {
+                    return;
+                }
+
+                toggleButton.addEventListener('click', function () {
+                    const collapsed = sidebar.classList.toggle('collapsed');
+                    mainContent.classList.toggle('collapsed', collapsed);
+
+                    toggleButton.setAttribute('aria-expanded', String(!collapsed));
+                    toggleButton.querySelector('.sidebar-toggle-text').textContent = collapsed ? 'Mostrar panel' : 'Ocultar panel';
+                    toggleButton.querySelector('i').className = collapsed ? 'bi bi-layout-sidebar-inset' : 'bi bi-layout-sidebar-inset-reverse';
+                    sidebarStatus.textContent = collapsed ? 'Panel de navegación oculto' : 'Panel de navegación visible';
                 });
             });
         </script>
-    </body>
-</html>
+    @endpush
+@endsection
