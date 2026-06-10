@@ -12,9 +12,11 @@
                         <i class="bi bi-eye me-2"></i>Detalles del Lote: {{ $lote->codigo }}
                     </h5>
                     <div>
-                        <a href="{{ route('lotes.edit', $lote) }}" class="btn btn-warning rounded-pill px-3 me-2">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
+                        @can('update', $lote)
+                            <a href="{{ route('lotes.edit', $lote) }}" class="btn btn-warning rounded-pill px-3 me-2">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                        @endcan
                         <a href="{{ route('lotes.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                             <i class="bi bi-arrow-left me-1"></i>Volver
                         </a>
@@ -113,11 +115,10 @@
                     </div>
                     @else
                     <div class="mt-4">
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>
+                        <x-alert type="info">
                             Este lote aún no tiene inventario registrado.
                             <a href="#" class="alert-link">Registrar inventario</a>
-                        </div>
+                        </x-alert>
                     </div>
                     @endif
                 </div>

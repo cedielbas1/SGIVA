@@ -16,15 +16,16 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('actividades.update', $actividad) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    @can('update', $actividad)
+                        <form action="{{ route('actividades.update', $actividad) }}" method="POST" novalidate class="js-validate-form">
+                            @csrf
+                            @method('PUT')
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="tipo_actividad" class="form-label fw-bold">Tipo de Actividad <span class="text-danger">*</span></label>
-                                        <select name="tipo_actividad" id="tipo_actividad" class="form-select form-select-lg @error('tipo_actividad') is-invalid @enderror" required
+                                        <select name="tipo_actividad" id="tipo_actividad" class="form-select form-select-lg @error('tipo_actividad') is-invalid @enderror js-validate" required
                                             aria-required="true"
                                             aria-invalid="@error('tipo_actividad') true @else false @enderror"
                                             @error('tipo_actividad') aria-describedby="tipo_actividad-error" @enderror
@@ -37,15 +38,13 @@
                                         <option value="Mantenimiento" {{ old('tipo_actividad', $actividad->tipo_actividad) == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
                                         <option value="Otra" {{ old('tipo_actividad', $actividad->tipo_actividad) == 'Otra' ? 'selected' : '' }}>Otra</option>
                                     </select>
-                                    @error('tipo_actividad')
-                                        <div id="tipo_actividad-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                    <div id="tipo_actividad-error" class="invalid-feedback js-error" data-for="tipo_actividad" role="alert">{{ $errors->first('tipo_actividad') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="lote_id" class="form-label fw-bold">Lote <span class="text-danger">*</span></label>
-                                        <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror" required
+                                        <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror js-validate" required
                                             aria-required="true"
                                             aria-invalid="@error('lote_id') true @else false @enderror"
                                             @error('lote_id') aria-describedby="lote_id-error" @enderror
@@ -57,9 +56,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('lote_id')
-                                        <div id="lote_id-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                    <div id="lote_id-error" class="invalid-feedback js-error" data-for="lote_id" role="alert">{{ $errors->first('lote_id') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -68,19 +65,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="fecha" class="form-label fw-bold">Fecha <span class="text-danger">*</span></label>
-                                    <input type="date"
-                                           name="fecha"
-                                           id="fecha"
-                                           class="form-control form-control-lg @error('fecha') is-invalid @enderror"
-                                           value="{{ old('fecha', $actividad->fecha->format('Y-m-d')) }}"
-                                           required
-                                           aria-required="true"
-                                           aria-invalid="@error('fecha') true @else false @enderror"
-                                           @error('fecha') aria-describedby="fecha-error" @enderror
-                                    >
-                                    @error('fecha')
-                                        <div id="fecha-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                     <input type="date"
+                                         name="fecha"
+                                         id="fecha"
+                                         class="form-control form-control-lg @error('fecha') is-invalid @enderror js-validate"
+                                         value="{{ old('fecha', $actividad->fecha->format('Y-m-d')) }}"
+                                         required
+                                         aria-required="true"
+                                         aria-invalid="@error('fecha') true @else false @enderror"
+                                         @error('fecha') aria-describedby="fecha-error" @enderror
+                                     autofocus>
+                                     <div id="fecha-error" class="invalid-feedback js-error" data-for="fecha" role="alert">{{ $errors->first('fecha') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -88,14 +83,12 @@
                                     <label for="observaciones" class="form-label fw-bold">Observaciones</label>
                                     <textarea name="observaciones"
                                               id="observaciones"
-                                              class="form-control form-control-lg @error('observaciones') is-invalid @enderror"
+                                              class="form-control form-control-lg @error('observaciones') is-invalid @enderror js-validate"
                                               rows="1"
                                               aria-invalid="@error('observaciones') true @else false @enderror"
                                               @error('observaciones') aria-describedby="observaciones-error" @enderror
                                     >{{ old('observaciones', $actividad->observaciones) }}</textarea>
-                                    @error('observaciones')
-                                        <div id="observaciones-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                    <div id="observaciones-error" class="invalid-feedback js-error" data-for="observaciones" role="alert">{{ $errors->first('observaciones') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -124,6 +117,11 @@
                             </div>
                         </div>
                     </form>
+                    @else
+                        <x-alert type="warning">
+                            No tienes permiso para editar esta actividad. <a href="{{ route('actividades.index') }}" class="alert-link">Volver</a>
+                        </x-alert>
+                    @endcan
                 </div>
             </div>
         </div>

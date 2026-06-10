@@ -12,9 +12,11 @@
                         <i class="bi bi-eye me-2"></i>Detalles de la Actividad
                     </h5>
                     <div>
-                        <a href="{{ route('actividades.edit', $actividad) }}" class="btn btn-warning rounded-pill px-3 me-2">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
+                        @can('update', $actividad)
+                            <a href="{{ route('actividades.edit', $actividad) }}" class="btn btn-warning rounded-pill px-3 me-2">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                        @endcan
                         <a href="{{ route('actividades.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                             <i class="bi bi-arrow-left me-1"></i>Volver
                         </a>

@@ -11,6 +11,7 @@ use App\Http\Controllers\LoteController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\InsumoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VentaController;
 
 Route::get('/', function () {
@@ -23,34 +24,29 @@ Route::get('/', function () {
 | GET/POST register → RegisterController (trait RegistersUsers; crea usuario e inicia sesión)
 | POST logout → LoginController@logout
 */
-// Solo permitir login y logout, no registro público
-Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register']);
+
+    Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+    Route::get('/mi-cuenta', [ProfileController::class, 'edit'])->name('account.edit');
+    Route::put('/mi-cuenta', [ProfileController::class, 'update'])->name('account.update');
+    Route::put('/mi-cuenta/password', [ProfileController::class, 'updatePassword'])->name('account.password');
+});
 
 Route::redirect('/home', '/dashboard');
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard')->middleware('auth');
-
-// Rutas públicas de lectura - solo autenticados
-Route::get('/cultivos', [CultivoController::class, 'index'])->name('cultivos.index')->middleware('auth');
-Route::get('/cultivos/{cultivo}', [CultivoController::class, 'show'])->name('cultivos.show')->middleware('auth');
-Route::get('/lotes', [LoteController::class, 'index'])->name('lotes.index')->middleware('auth');
-Route::get('/lotes/{lote}', [LoteController::class, 'show'])->name('lotes.show')->middleware('auth');
-Route::get('/inventarios', [InventarioController::class, 'index'])->name('inventarios.index')->middleware('auth');
-Route::get('/inventarios/{inventario}', [InventarioController::class, 'show'])->name('inventarios.show')->middleware('auth');
-Route::get('/actividades', [ActividadController::class, 'index'])->name('actividades.index')->middleware('auth');
-Route::get('/actividades/{actividad}', [ActividadController::class, 'show'])->name('actividades.show')->middleware('auth');
-Route::get('/insumos', [InsumoController::class, 'index'])->name('insumos.index')->middleware('auth');
-Route::get('/insumos/{insumo}', [InsumoController::class, 'show'])->name('insumos.show')->middleware('auth');
-Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index')->middleware('auth');
-Route::get('/ventas/{venta}', [VentaController::class, 'show'])->name('ventas.show')->middleware('auth');
-
 // Rutas de modificación - solo admin
 Route::middleware(['auth', 'check_role:admin'])->group(function () {
     Route::get('/cultivos/create', [CultivoController::class, 'create'])->name('cultivos.create');
@@ -90,3 +86,17 @@ Route::post('/actividades', [ActividadController::class, 'store'])->name('activi
 Route::get('/actividades/{actividad}/edit', [ActividadController::class, 'edit'])->name('actividades.edit')->middleware('auth');
 Route::put('/actividades/{actividad}', [ActividadController::class, 'update'])->name('actividades.update')->middleware('auth');
 Route::delete('/actividades/{actividad}', [ActividadController::class, 'destroy'])->name('actividades.destroy')->middleware('auth');
+
+// Rutas públicas de lectura - solo autenticados
+Route::get('/cultivos', [CultivoController::class, 'index'])->name('cultivos.index')->middleware('auth');
+Route::get('/cultivos/{cultivo}', [CultivoController::class, 'show'])->name('cultivos.show')->middleware('auth');
+Route::get('/lotes', [LoteController::class, 'index'])->name('lotes.index')->middleware('auth');
+Route::get('/lotes/{lote}', [LoteController::class, 'show'])->name('lotes.show')->middleware('auth');
+Route::get('/inventarios', [InventarioController::class, 'index'])->name('inventarios.index')->middleware('auth');
+Route::get('/inventarios/{inventario}', [InventarioController::class, 'show'])->name('inventarios.show')->middleware('auth');
+Route::get('/actividades', [ActividadController::class, 'index'])->name('actividades.index')->middleware('auth');
+Route::get('/actividades/{actividad}', [ActividadController::class, 'show'])->name('actividades.show')->middleware('auth');
+Route::get('/insumos', [InsumoController::class, 'index'])->name('insumos.index')->middleware('auth');
+Route::get('/insumos/{insumo}', [InsumoController::class, 'show'])->name('insumos.show')->middleware('auth');
+Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index')->middleware('auth');
+Route::get('/ventas/{venta}', [VentaController::class, 'show'])->name('ventas.show')->middleware('auth');

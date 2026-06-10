@@ -13,10 +13,37 @@ class InsumoController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $insumos = Insumo::with('cultivo')->paginate(15);
-        return view('insumos.index', compact('insumos'));
+        $cultivos = Cultivo::where('estado', true)->orderBy('nombre')->get();
+        $tipos = Insumo::select('tipo')->distinct()->orderBy('tipo')->pluck('tipo');
+
+        $query = Insumo::with('cultivo');
+
+        $query->when($request->filled('cultivo_id'), fn ($query, $cultivoId) => $query->where('cultivo_id', $cultivoId));
+        $query->when($request->filled('tipo'), fn ($query, $tipo) => $query->where('tipo', $tipo));
+        $query->when($request->filled('fecha_inicio'), fn ($query, $fecha) => $query->whereDate('fecha_ingreso', '>=', $fecha));
+        $query->when($request->filled('fecha_fin'), fn ($query, $fecha) => $query->whereDate('fecha_ingreso', '<=', $fecha));
+        $query->when($request->filled('search'), function ($query, $search) {
+            $query->where('tipo', 'like', '%' . $search . '%')
+                ->orWhere('observaciones', 'like', '%' . $search . '%')
+                ->orWhereHas('cultivo', fn ($query) => $query->where('nombre', 'like', '%' . $search . '%'));
+        });
+
+        $sort = in_array($request->query('sort'), ['id', 'tipo', 'cantidad', 'fecha_ingreso'])
+            ? $request->query('sort')
+            : 'fecha_ingreso';
+        $direction = $request->query('direction') === 'asc' ? 'asc' : 'desc';
+
+        $insumos = $query->orderBy($sort, $direction)
+            ->paginate(15)
+            ->withQueryString();
+
+        $totales = [
+            'cantidad' => (clone $query)->sum('cantidad'),
+        ];
+
+        return view('insumos.index', compact('insumos', 'cultivos', 'tipos', 'totales'));
     }
 
     public function create()

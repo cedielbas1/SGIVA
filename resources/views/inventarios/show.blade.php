@@ -12,9 +12,11 @@
                         <i class="bi bi-eye me-2"></i>Detalles del Inventario
                     </h5>
                     <div>
-                        <a href="{{ route('inventarios.edit', $inventario) }}" class="btn btn-warning rounded-pill px-3 me-2">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
+                        @can('update', $inventario)
+                            <a href="{{ route('inventarios.edit', $inventario) }}" class="btn btn-warning rounded-pill px-3 me-2">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                        @endcan
                         <a href="{{ route('inventarios.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                             <i class="bi bi-arrow-left me-1"></i>Volver
                         </a>

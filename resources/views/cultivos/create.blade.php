@@ -16,8 +16,9 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('cultivos.store') }}" method="POST">
-                        @csrf
+                    @can('create', App\Models\Cultivo::class)
+                        <form action="{{ route('cultivos.store') }}" method="POST" novalidate class="js-validate-form">
+                            @csrf
 
                         <div class="row">
                             <div class="col-md-8">
@@ -26,14 +27,12 @@
                                     <input type="text"
                                            name="nombre"
                                            id="nombre"
-                                           class="form-control form-control-lg @error('nombre') is-invalid @enderror"
+                                           class="form-control form-control-lg @error('nombre') is-invalid @enderror js-validate"
                                            placeholder="Ej: Café, Aguacate, Cacao"
                                            value="{{ old('nombre') }}"
                                            required
                                            autofocus>
-                                    @error('nombre')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="invalid-feedback js-error" data-for="nombre">{{ $errors->first('nombre') }}</div>
                                     <div class="form-text">Ingresa el nombre del cultivo que deseas registrar.</div>
                                 </div>
                             </div>
@@ -42,11 +41,12 @@
                                     <label class="form-label fw-bold">Estado</label>
                                     <input type="hidden" name="estado" value="0">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="estado" id="estado" value="1" checked>
+                                        <input class="form-check-input js-validate" type="checkbox" name="estado" id="estado" value="1" checked>
                                         <label class="form-check-label" for="estado">
                                             Activo
                                         </label>
                                     </div>
+                                    <div class="invalid-feedback js-error" data-for="estado">{{ $errors->first('estado') }}</div>
                                     <div class="form-text">Los cultivos activos estarán disponibles para crear lotes.</div>
                                 </div>
                             </div>
@@ -65,6 +65,11 @@
                             </div>
                         </div>
                     </form>
+                    @else
+                        <x-alert type="warning">
+                            No tienes permiso para crear cultivos. <a href="{{ route('cultivos.index') }}" class="alert-link">Volver</a>
+                        </x-alert>
+                    @endcan
                 </div>
             </div>
         </div>

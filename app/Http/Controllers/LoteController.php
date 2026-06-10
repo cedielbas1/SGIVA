@@ -16,11 +16,34 @@ class LoteController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Usamos 'with' para cargar el cultivo y evitar muchas consultas (Eager Loading)
-        $lotes = Lote::with('cultivo')->get();
-        return view('lotes.index', compact('lotes'));
+        $cultivos = Cultivo::orderBy('nombre')->get();
+        $estados = Lote::select('estado')->distinct()->orderBy('estado')->pluck('estado');
+
+        $query = Lote::with('cultivo');
+
+        $query->when($request->filled('estado'), fn ($query, $estado) => $query->where('estado', $estado));
+        $query->when($request->filled('cultivo_id'), fn ($query, $cultivoId) => $query->where('cultivo_id', $cultivoId));
+        $query->when($request->filled('fecha_inicio'), fn ($query, $fecha) => $query->whereDate('created_at', '>=', $fecha));
+        $query->when($request->filled('fecha_fin'), fn ($query, $fecha) => $query->whereDate('created_at', '<=', $fecha));
+        $query->when($request->filled('search'), function ($query, $search) {
+            $query->where('codigo', 'like', '%' . $search . '%')
+                ->orWhereHas('cultivo', fn ($query) => $query->where('nombre', 'like', '%' . $search . '%'));
+        });
+
+        $sort = in_array($request->query('sort'), ['id', 'codigo', 'cantidad_filas', 'cultivo_id', 'created_at'])
+            ? $request->query('sort')
+            : 'created_at';
+        $direction = $request->query('direction') === 'asc' ? 'asc' : 'desc';
+
+        $lotes = $query->orderBy($sort, $direction)
+            ->paginate(15)
+            ->withQueryString();
+
+        $sumFilas = (clone $query)->sum('cantidad_filas');
+
+        return view('lotes.index', compact('lotes', 'cultivos', 'estados', 'sumFilas'));
     }
 
     public function create()
@@ -38,9 +61,10 @@ class LoteController extends Controller
             'codigo' => 'required|unique:lotes',
             'cultivo_id' => 'required|exists:cultivos,id',
             'cantidad_filas' => 'required|integer|min:1',
-            'estado' => 'nullable|string',
+            'estado' => 'nullable|boolean',
         ]);
 
+        $validated['estado'] = isset($validated['estado']) ? (bool) $validated['estado'] : false;
         Lote::create($validated);
         return redirect()->route('lotes.index')->with('success', 'Lote registrado correctamente.');
     }
@@ -67,9 +91,10 @@ class LoteController extends Controller
             'codigo' => 'required|unique:lotes,codigo,' . $lote->id,
             'cultivo_id' => 'required|exists:cultivos,id',
             'cantidad_filas' => 'required|integer|min:1',
-            'estado' => 'nullable|string',
+            'estado' => 'nullable|boolean',
         ]);
 
+        $validated['estado'] = isset($validated['estado']) ? (bool) $validated['estado'] : false;
         $lote->update($validated);
         return redirect()->route('lotes.index')->with('success', 'Lote actualizado correctamente.');
     }

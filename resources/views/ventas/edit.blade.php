@@ -16,15 +16,16 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('ventas.update', $venta) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    @can('update', $venta)
+                        <form action="{{ route('ventas.update', $venta) }}" method="POST" novalidate class="js-validate-form">
+                            @csrf
+                            @method('PUT')
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="cultivo_id" class="form-label fw-bold">Cultivo <span class="text-danger">*</span></label>
-                                        <select name="cultivo_id" id="cultivo_id" class="form-select form-select-lg @error('cultivo_id') is-invalid @enderror" required
+                                        <select name="cultivo_id" id="cultivo_id" class="form-select form-select-lg @error('cultivo_id') is-invalid @enderror js-validate" required
                                             aria-required="true"
                                             aria-invalid="@error('cultivo_id') true @else false @enderror"
                                             @error('cultivo_id') aria-describedby="cultivo_id-error" @enderror
@@ -36,15 +37,13 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('cultivo_id')
-                                        <div id="cultivo_id-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                    <div id="cultivo_id-error" class="invalid-feedback js-error" data-for="cultivo_id" role="alert">{{ $errors->first('cultivo_id') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="lote_id" class="form-label fw-bold">Lote <span class="text-danger">*</span></label>
-                                        <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror" required
+                                        <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror js-validate" required
                                             aria-required="true"
                                             aria-invalid="@error('lote_id') true @else false @enderror"
                                             @error('lote_id') aria-describedby="lote_id-error" @enderror
@@ -56,9 +55,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('lote_id')
-                                        <div id="lote_id-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                    <div id="lote_id-error" class="invalid-feedback js-error" data-for="lote_id" role="alert">{{ $errors->first('lote_id') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -67,40 +64,36 @@
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="cantidad_vendida" class="form-label fw-bold">Cantidad Vendida <span class="text-danger">*</span></label>
-                                    <input type="number"
-                                           name="cantidad_vendida"
-                                           id="cantidad_vendida"
-                                           class="form-control form-control-lg @error('cantidad_vendida') is-invalid @enderror"
-                                           value="{{ old('cantidad_vendida', $venta->cantidad_vendida) }}"
-                                           min="1"
-                                           required
-                                           aria-required="true"
-                                           aria-invalid="@error('cantidad_vendida') true @else false @enderror"
-                                           @error('cantidad_vendida') aria-describedby="cantidad_vendida-error" @enderror
-                                    >
-                                    @error('cantidad_vendida')
-                                        <div id="cantidad_vendida-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                     <input type="number"
+                                         name="cantidad_vendida"
+                                         id="cantidad_vendida"
+                                         class="form-control form-control-lg @error('cantidad_vendida') is-invalid @enderror js-validate"
+                                         value="{{ old('cantidad_vendida', $venta->cantidad_vendida) }}"
+                                         min="1"
+                                         required
+                                         aria-required="true"
+                                         aria-invalid="@error('cantidad_vendida') true @else false @enderror"
+                                         @error('cantidad_vendida') aria-describedby="cantidad_vendida-error" @enderror
+                                     >
+                                     <div id="cantidad_vendida-error" class="invalid-feedback js-error" data-for="cantidad_vendida" role="alert">{{ $errors->first('cantidad_vendida') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="precio_unitario" class="form-label fw-bold">Precio Unitario <span class="text-danger">*</span></label>
-                                    <input type="number"
-                                           name="precio_unitario"
-                                           id="precio_unitario"
-                                           class="form-control form-control-lg @error('precio_unitario') is-invalid @enderror"
-                                           value="{{ old('precio_unitario', $venta->precio_unitario) }}"
-                                           step="0.01"
-                                           min="0"
-                                           required
-                                           aria-required="true"
-                                           aria-invalid="@error('precio_unitario') true @else false @enderror"
-                                           @error('precio_unitario') aria-describedby="precio_unitario-error" @enderror
-                                    >
-                                    @error('precio_unitario')
-                                        <div id="precio_unitario-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                     <input type="number"
+                                         name="precio_unitario"
+                                         id="precio_unitario"
+                                         class="form-control form-control-lg @error('precio_unitario') is-invalid @enderror js-validate"
+                                         value="{{ old('precio_unitario', $venta->precio_unitario) }}"
+                                         step="0.01"
+                                         min="0"
+                                         required
+                                         aria-required="true"
+                                         aria-invalid="@error('precio_unitario') true @else false @enderror"
+                                         @error('precio_unitario') aria-describedby="precio_unitario-error" @enderror
+                                     >
+                                     <div id="precio_unitario-error" class="invalid-feedback js-error" data-for="precio_unitario" role="alert">{{ $errors->first('precio_unitario') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -121,19 +114,17 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="fecha_venta" class="form-label fw-bold">Fecha de Venta <span class="text-danger">*</span></label>
-                                    <input type="date"
-                                           name="fecha_venta"
-                                           id="fecha_venta"
-                                           class="form-control form-control-lg @error('fecha_venta') is-invalid @enderror"
-                                           value="{{ old('fecha_venta', $venta->fecha_venta->format('Y-m-d')) }}"
-                                           required
-                                           aria-required="true"
-                                           aria-invalid="@error('fecha_venta') true @else false @enderror"
-                                           @error('fecha_venta') aria-describedby="fecha_venta-error" @enderror
-                                    >
-                                    @error('fecha_venta')
-                                        <div id="fecha_venta-error" class="invalid-feedback" role="alert">{{ $message }}</div>
-                                    @enderror
+                                     <input type="date"
+                                         name="fecha_venta"
+                                         id="fecha_venta"
+                                         class="form-control form-control-lg @error('fecha_venta') is-invalid @enderror js-validate"
+                                         value="{{ old('fecha_venta', $venta->fecha_venta->format('Y-m-d')) }}"
+                                         required
+                                         aria-required="true"
+                                         aria-invalid="@error('fecha_venta') true @else false @enderror"
+                                         @error('fecha_venta') aria-describedby="fecha_venta-error" @enderror
+                                     >
+                                     <div id="fecha_venta-error" class="invalid-feedback js-error" data-for="fecha_venta" role="alert">{{ $errors->first('fecha_venta') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -162,6 +153,11 @@
                             </div>
                         </div>
                     </form>
+                    @else
+                        <x-alert type="warning">
+                            No tienes permiso para editar esta venta. <a href="{{ route('ventas.index') }}" class="alert-link">Volver</a>
+                        </x-alert>
+                    @endcan
                 </div>
             </div>
         </div>

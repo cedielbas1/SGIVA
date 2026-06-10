@@ -12,9 +12,11 @@
                         <i class="bi bi-eye me-2"></i>Detalles del Cultivo
                     </h5>
                     <div>
-                        <a href="{{ route('cultivos.edit', $cultivo) }}" class="btn btn-warning rounded-pill px-3 me-2">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
+                        @can('update', $cultivo)
+                            <a href="{{ route('cultivos.edit', $cultivo) }}" class="btn btn-warning rounded-pill px-3 me-2">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                        @endcan
                         <a href="{{ route('cultivos.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                             <i class="bi bi-arrow-left me-1"></i>Volver
                         </a>
@@ -107,11 +109,12 @@
                     </div>
                     @else
                     <div class="mt-4">
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>
+                        <x-alert type="info">
                             Este cultivo aún no tiene lotes registrados.
-                            <a href="#" class="alert-link">Crear primer lote</a>
-                        </div>
+                            @can('create', App\Models\Lote::class)
+                                <a href="{{ route('lotes.create') }}" class="alert-link">Crear primer lote</a>
+                            @endcan
+                        </x-alert>
                     </div>
                     @endif
                 </div>

@@ -15,10 +15,38 @@ class CultivoController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $cultivos = Cultivo::all();
-        return view('cultivos.index', compact('cultivos'));
+        $query = Cultivo::query();
+
+        $query->when($request->filled('estado'), function ($query, $estado) {
+            if ($estado === 'activo') {
+                $query->where('estado', true);
+            } elseif ($estado === 'inactivo') {
+                $query->where('estado', false);
+            }
+        });
+
+        $query->when($request->filled('search'), function ($query, $search) {
+            $query->where('nombre', 'like', '%' . $search . '%');
+        });
+
+        $sort = in_array($request->query('sort'), ['id', 'nombre', 'estado', 'created_at'])
+            ? $request->query('sort')
+            : 'created_at';
+        $direction = $request->query('direction') === 'asc' ? 'asc' : 'desc';
+
+        $cultivos = $query->orderBy($sort, $direction)
+            ->paginate(15)
+            ->withQueryString();
+
+        $totales = [
+            'total' => $cultivos->total(),
+            'activos' => Cultivo::where('estado', true)->count(),
+            'inactivos' => Cultivo::where('estado', false)->count(),
+        ];
+
+        return view('cultivos.index', compact('cultivos', 'totales'));
     }
 
     public function create()
@@ -40,7 +68,7 @@ class CultivoController extends Controller
         $data['estado'] = (bool) ($data['estado'] ?? false);
         
         Cultivo::create($data);
-        return redirect()->route('cultivos.index')->with('success', 'Cultivo creado exitosamente.');
+        return redirect()->route('cultivos.index')->with('success', 'Cultivo creado correctamente.');
     }
 
     public function show(Cultivo $cultivo)
@@ -68,7 +96,7 @@ class CultivoController extends Controller
         $data['estado'] = (bool) ($data['estado'] ?? false);
         
         $cultivo->update($data);
-        return redirect()->route('cultivos.index')->with('success', 'Cultivo actualizado.');
+        return redirect()->route('cultivos.index')->with('success', 'Cultivo actualizado correctamente.');
     }
 
     public function destroy(Cultivo $cultivo)
@@ -76,6 +104,6 @@ class CultivoController extends Controller
         $this->authorize('delete', $cultivo);
         
         $cultivo->delete();
-        return redirect()->route('cultivos.index')->with('success', 'Cultivo eliminado.');
+        return redirect()->route('cultivos.index')->with('success', 'Cultivo eliminado correctamente.');
     }
 }

@@ -12,9 +12,11 @@
                         <i class="bi bi-eye me-2"></i>Detalles del Insumo
                     </h5>
                     <div>
-                        <a href="{{ route('insumos.edit', $insumo) }}" class="btn btn-warning rounded-pill px-3 me-2">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </a>
+                        @can('update', $insumo)
+                            <a href="{{ route('insumos.edit', $insumo) }}" class="btn btn-warning rounded-pill px-3 me-2">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                        @endcan
                         <a href="{{ route('insumos.index') }}" class="btn btn-outline-secondary rounded-pill px-3">
                             <i class="bi bi-arrow-left me-1"></i>Volver
                         </a>

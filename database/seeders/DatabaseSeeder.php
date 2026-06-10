@@ -23,11 +23,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $superAdminEmail = env('SUPER_ADMIN_EMAIL', 'superadmin@sgiva.local');
+        $superAdminPassword = env('SUPER_ADMIN_PASSWORD', 'password');
+
         $superAdmin = User::firstOrCreate([
-            'email' => 'superadmin@sgiva.local',
+            'email' => $superAdminEmail,
         ], [
             'name' => 'Super Admin',
-            'password' => Hash::make('password'),
+            'password' => Hash::make($superAdminPassword),
             'role' => 'super_admin',
         ]);
 

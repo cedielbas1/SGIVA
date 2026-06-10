@@ -14,10 +14,37 @@ class VentaController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $ventas = Venta::with('cultivo', 'lote')->paginate(15);
-        return view('ventas.index', compact('ventas'));
+        $cultivos = Cultivo::where('estado', true)->orderBy('nombre')->get();
+        $lotes = Lote::with('cultivo')->get();
+
+        $query = Venta::with('cultivo', 'lote');
+
+        $query->when($request->filled('cultivo_id'), fn ($query, $cultivoId) => $query->where('cultivo_id', $cultivoId));
+        $query->when($request->filled('lote_id'), fn ($query, $loteId) => $query->where('lote_id', $loteId));
+        $query->when($request->filled('fecha_inicio'), fn ($query, $fecha) => $query->whereDate('fecha_venta', '>=', $fecha));
+        $query->when($request->filled('fecha_fin'), fn ($query, $fecha) => $query->whereDate('fecha_venta', '<=', $fecha));
+        $query->when($request->filled('search'), function ($query, $search) {
+            $query->whereHas('cultivo', fn ($query) => $query->where('nombre', 'like', '%' . $search . '%'))
+                ->orWhereHas('lote', fn ($query) => $query->where('codigo', 'like', '%' . $search . '%'));
+        });
+
+        $sort = in_array($request->query('sort'), ['id', 'cultivo_id', 'lote_id', 'cantidad_vendida', 'precio_unitario', 'total', 'fecha_venta'])
+            ? $request->query('sort')
+            : 'fecha_venta';
+        $direction = $request->query('direction') === 'asc' ? 'asc' : 'desc';
+
+        $ventas = $query->orderBy($sort, $direction)
+            ->paginate(15)
+            ->withQueryString();
+
+        $totales = [
+            'cantidad_vendida' => (clone $query)->sum('cantidad_vendida'),
+            'total' => (clone $query)->sum('total'),
+        ];
+
+        return view('ventas.index', compact('ventas', 'cultivos', 'lotes', 'totales'));
     }
 
     public function create()
@@ -32,7 +59,7 @@ class VentaController extends Controller
     {
         $this->authorize('create', Venta::class);
 
-        $request->validate([
+        $validated = $request->validate([
             'cultivo_id' => 'required|exists:cultivos,id',
             'lote_id' => 'required|exists:lotes,id',
             'cantidad_vendida' => 'required|integer|min:1',
@@ -66,7 +93,7 @@ class VentaController extends Controller
     {
         $this->authorize('update', $venta);
 
-        $request->validate([
+        $validated = $request->validate([
             'cultivo_id' => 'required|exists:cultivos,id',
             'lote_id' => 'required|exists:lotes,id',
             'cantidad_vendida' => 'required|integer|min:1',

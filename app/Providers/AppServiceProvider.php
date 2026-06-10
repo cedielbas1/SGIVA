@@ -40,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Insumo::class, InsumoPolicy::class);
         Gate::policy(Venta::class, VentaPolicy::class);
 
+        // Permitir automáticamente todos los permisos a super_admin
+        Gate::before(fn ($user, $ability) => $user->isSuperAdmin() ? true : null);
+
         // Gates para roles
         Gate::define('super_admin', fn ($user) => $user->isSuperAdmin());
         Gate::define('admin', fn ($user) => $user->isAdmin());

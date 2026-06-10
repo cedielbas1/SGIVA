@@ -16,15 +16,16 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('inventarios.update', $inventario) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    @can('update', $inventario)
+                        <form action="{{ route('inventarios.update', $inventario) }}" method="POST" novalidate class="js-validate-form">
+                            @csrf
+                            @method('PUT')
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="lote_id" class="form-label fw-bold">Lote <span class="text-danger">*</span></label>
-                                    <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror" required>
+                                    <select name="lote_id" id="lote_id" class="form-select form-select-lg @error('lote_id') is-invalid @enderror js-validate" required>
                                         <option value="">Seleccionar lote...</option>
                                         @foreach($lotes as $lote)
                                             <option value="{{ $lote->id }}" {{ old('lote_id', $inventario->lote_id) == $lote->id ? 'selected' : '' }}>
@@ -32,24 +33,20 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('lote_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <div class="invalid-feedback js-error" data-for="lote_id">{{ $errors->first('lote_id') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="fila" class="form-label fw-bold">Número de Fila <span class="text-danger">*</span></label>
-                                    <input type="number"
-                                           name="fila"
-                                           id="fila"
-                                           class="form-control form-control-lg @error('fila') is-invalid @enderror"
-                                           value="{{ old('fila', $inventario->fila) }}"
-                                           min="1"
-                                           required>
-                                    @error('fila')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                     <input type="number"
+                                         name="fila"
+                                         id="fila"
+                                         class="form-control form-control-lg @error('fila') is-invalid @enderror js-validate"
+                                         value="{{ old('fila', $inventario->fila) }}"
+                                         min="1"
+                                         required autofocus>
+                                     <div class="invalid-feedback js-error" data-for="fila">{{ $errors->first('fila') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -58,31 +55,27 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="cantidad_inicial" class="form-label fw-bold">Cantidad Inicial <span class="text-danger">*</span></label>
-                                    <input type="number"
-                                           name="cantidad_inicial"
-                                           id="cantidad_inicial"
-                                           class="form-control form-control-lg @error('cantidad_inicial') is-invalid @enderror"
-                                           value="{{ old('cantidad_inicial', $inventario->cantidad_inicial) }}"
-                                           min="0"
-                                           required>
-                                    @error('cantidad_inicial')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                     <input type="number"
+                                         name="cantidad_inicial"
+                                         id="cantidad_inicial"
+                                         class="form-control form-control-lg @error('cantidad_inicial') is-invalid @enderror js-validate"
+                                         value="{{ old('cantidad_inicial', $inventario->cantidad_inicial) }}"
+                                         min="0"
+                                         required>
+                                     <div class="invalid-feedback js-error" data-for="cantidad_inicial">{{ $errors->first('cantidad_inicial') }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="cantidad_actual" class="form-label fw-bold">Cantidad Actual <span class="text-danger">*</span></label>
-                                    <input type="number"
-                                           name="cantidad_actual"
-                                           id="cantidad_actual"
-                                           class="form-control form-control-lg @error('cantidad_actual') is-invalid @enderror"
-                                           value="{{ old('cantidad_actual', $inventario->cantidad_actual) }}"
-                                           min="0"
-                                           required>
-                                    @error('cantidad_actual')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                     <input type="number"
+                                         name="cantidad_actual"
+                                         id="cantidad_actual"
+                                         class="form-control form-control-lg @error('cantidad_actual') is-invalid @enderror js-validate"
+                                         value="{{ old('cantidad_actual', $inventario->cantidad_actual) }}"
+                                         min="0"
+                                         required>
+                                     <div class="invalid-feedback js-error" data-for="cantidad_actual">{{ $errors->first('cantidad_actual') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -111,6 +104,11 @@
                             </div>
                         </div>
                     </form>
+                    @else
+                        <x-alert type="warning">
+                            No tienes permiso para editar este inventario. <a href="{{ route('inventarios.index') }}" class="alert-link">Volver</a>
+                        </x-alert>
+                    @endcan
                 </div>
             </div>
         </div>
