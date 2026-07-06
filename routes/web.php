@@ -13,10 +13,17 @@ use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\HealthCheckController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+/*
+| Health Check Endpoints (no auth requerido para monitoreo externo)
+*/
+Route::get('/health', [HealthCheckController::class, 'check']);
+Route::get('/health/detailed', [HealthCheckController::class, 'detailed'])->middleware('auth');
 
 /*
 | Autenticación Laravel (laravel/ui, guard "web", sesión):
