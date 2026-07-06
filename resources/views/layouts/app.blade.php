@@ -25,7 +25,6 @@
     <div id="app">
         <main class="py-4">
             @include('components.flash-alerts')
-            @include('components.confirm-delete-modal')
             @yield('content')
         </main>
     </div>

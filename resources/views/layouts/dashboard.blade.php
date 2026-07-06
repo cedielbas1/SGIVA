@@ -155,7 +155,6 @@
         <div class="content-wrapper">
             <div id="sidebarStatus" class="visually-hidden" aria-live="polite">Panel de navegación visible</div>
             @include('components.flash-alerts')
-            @include('components.confirm-delete-modal')
             @yield('content')
         </div>
     </main>

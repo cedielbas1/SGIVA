@@ -152,3 +152,6 @@
     </div>
 </div>
 @endsection
+@if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()))
+    @include('components.confirm-delete-modal')
+@endif
